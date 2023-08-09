@@ -11,7 +11,6 @@ module.exports = (sequelize, DataTypes) => {
         }
     }
     Score.init({
-        id: DataTypes.INTEGER,
         userId: {
             type: DataTypes.INTEGER,
             references: {
@@ -24,11 +23,9 @@ module.exports = (sequelize, DataTypes) => {
         },
         gameId: DataTypes.INTEGER,
         score: DataTypes.INTEGER,
-        createdAt: DataTypes.Date,
-        updateAt: DataTypes.Date
     }, {
         sequelize,
-        tableName: 'users',
+        tableName: 'score',
     });
-    return User;
+    return Score;
 };

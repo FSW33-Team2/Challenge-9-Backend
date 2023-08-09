@@ -10,14 +10,13 @@ module.exports = (sequelize, DataTypes) => {
         }
     }
     Game.init({
-        id: DataTypes.INTEGER,
+
         title: DataTypes.STRING,
         description: DataTypes.TEXT,
-        createdAt: DataTypes.Date,
-        updateAt: DataTypes.Date
+
     }, {
         sequelize,
-        tableName: 'users',
+        tableName: 'game',
     });
-    return User;
+    return Game;
 };
