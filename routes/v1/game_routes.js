@@ -4,6 +4,5 @@ const playerRouter = require("express").Router();
 
 playerRouter.get("/", PlayerControl.getGameTable);
 playerRouter.post("/:gameId/:id", PlayerControl.score);
-playerRouter.get("/:gameId/:id", PlayerControl.getScore);
 
 module.exports = playerRouter;
