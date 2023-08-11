@@ -14,10 +14,7 @@ module.exports = {
     },
 
     down: async(queryInterface, Sequelize) => {
-        await queryInterface.changeColumn('score', 'userId', {
-            type: Sequelize.INTEGER,
-
-        });
+        await queryInterface.removeColumn('score', 'userId');
 
     },
 };
