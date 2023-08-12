@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Score extends Model {
     /**
@@ -13,22 +11,25 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       this.belongsTo(models.User, {
         foreignKey: `userId`,
-        onDelete: "CASCADE"
-      })
+        onDelete: "CASCADE",
+      });
 
       this.belongsTo(models.Game, {
-        foreignKey : "gameId",
-        onDelete: "CASCADE"
-      })
+        foreignKey: "gameId",
+        onDelete: "CASCADE",
+      });
     }
   }
-  Score.init({
-    userid: DataTypes.INTEGER,
-    gameId: DataTypes.INTEGER,
-    score: DataTypes.INTEGER
-  }, {
-    sequelize,
-    modelName: 'Score',
-  });
+  Score.init(
+    {
+      userId: DataTypes.INTEGER,
+      gameId: DataTypes.INTEGER,
+      score: DataTypes.INTEGER,
+    },
+    {
+      sequelize,
+      modelName: "Score",
+    }
+  );
   return Score;
 };
