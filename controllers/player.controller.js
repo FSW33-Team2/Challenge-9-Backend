@@ -1,21 +1,7 @@
-const {Game, User} = require("../database/models");
-
+const { User } = require("../database/models");
+const { hashPassword } = require("../utils/passwordHandler");
 
 module.exports = class PlayerControllers {
-  async getGameTable(req, res, next) {
-    try {
-      const gameList = await Game.findAll()
-      if (gameList) {
-        return res.status(200).json({
-          result: "Success",
-          gameList,
-        })
-      }
-    } catch (error) {
-      next(error);
-    }
-  }
-
   async getPlayer(req, res, next) {
     try {
       const { id } = req.params;
@@ -23,27 +9,39 @@ module.exports = class PlayerControllers {
       if (player) {
         return res.status(200).json({
           status: "Success",
-          data: player
+          data: player,
         });
       } else {
         return res.status(404).json({
           result: "Not found",
-          message: `Player with ${id} not found`
-        })
+          message: `Player with ${id} not found`,
+        });
       }
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
 
   async updatePlayer(req, res, next) {
     try {
       const { id } = req.params;
+      const { username, email, password } = req.body;
       const data = await User.findByPk(id);
-      if (!data) return res.status(404).json({ result: "Not found", message: `Player with id: ${id} not found` })
-      const updatePlayer = await User.update(req.body, {
-        where: { id: id },
-      });
+      if (!data)
+        return res.status(404).json({
+          result: "Not found",
+          message: `Player with id: ${id} not found`,
+        });
+      const updatePlayer = await User.update(
+        {
+          username,
+          email,
+          password: await hashPassword(password),
+        },
+        {
+          where: { id: id },
+        }
+      );
       if (updatePlayer == 1) {
         return res.status(200).json({
           result: "Success",
@@ -59,6 +57,4 @@ module.exports = class PlayerControllers {
       next(error);
     }
   }
-}
-
-
+};

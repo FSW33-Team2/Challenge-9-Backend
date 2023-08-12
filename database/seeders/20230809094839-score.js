@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -7,21 +7,21 @@ module.exports = {
       {
         userId: 1,
         gameId: 1,
-        score: 5,
+        score: 1,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
         userId: 1,
         gameId: 1,
-        score: 4,
+        score: 1,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
         userId: 1,
         gameId: 2,
-        score: 4,
+        score: 1,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
