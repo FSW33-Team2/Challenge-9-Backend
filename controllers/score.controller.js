@@ -22,14 +22,7 @@ module.exports = class ScoreControllers {
           message: `Game is not exist`,
         });
 
-      const findLastScore = await Score.findOne({
-        where: {
-          userId: id,
-          gameId: gameId,
-        },
-      });
-
-      if (findLastScore) {
+      if (player && game) {
         const getScore = await Score.create({
           userId: id,
           gameId: gameId,
@@ -67,7 +60,12 @@ module.exports = class ScoreControllers {
           userId: id,
         },
       });
-      if (score) {
+      if (score.length === 0) {
+        return res.status(500).json({
+          result: "failed",
+          message: "This player didnt have score",
+        });
+      } else {
         let scoreArr = [];
         score.forEach((score) => {
           scoreArr.push(score.score);
@@ -91,7 +89,12 @@ module.exports = class ScoreControllers {
           gameId,
         },
       });
-      if (score) {
+      if (score.length === 0) {
+        return res.status(500).json({
+          result: "failed",
+          message: "This player didnt have score",
+        });
+      } else {
         let scoreArr = [];
         score.forEach((score) => {
           scoreArr.push(score.score);
