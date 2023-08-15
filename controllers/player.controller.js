@@ -1,8 +1,10 @@
 const { User } = require("../database/models");
 const { hashPassword } = require("../utils/passwordHandler");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 module.exports = class PlayerControllers {
-  async getPlayer(req, res, next) {
+  async getPlayerById(req, res, next) {
     try {
       const { id } = req.params;
       const player = await User.findByPk(id);
