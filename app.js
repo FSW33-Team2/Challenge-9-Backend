@@ -1,5 +1,5 @@
 require("dotenv").config();
-const express = require('express');
+const express = require("express");
 const app = express();
 const apiRouter = require('./routes')
 const cookieParser =  require('cookie-parser');
@@ -10,7 +10,7 @@ app.use(cors({credentials:true, origin:'http://localhost:3000'}))
 app.use(cookieParser())
 app.use(express.json())
 
-app.use("/", apiRouter)
+app.use("/", apiRouter);
 
 const PORT = 8000;
 app.listen(PORT, () => {
