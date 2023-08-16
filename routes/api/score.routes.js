@@ -3,6 +3,7 @@ const ScoreControl = new ScoreController();
 const ScoreRouter = require("express").Router();
 
 ScoreRouter.get("/leaderboard/:gameId", ScoreControl.TotalScoreLeaderboard);
+ScoreRouter.get("/leaderboard", ScoreControl.Leaderboard);
 ScoreRouter.get("/:gameId/:id", ScoreControl.TotalScoreInGame);
 ScoreRouter.post("/:gameId/:id", ScoreControl.UpdateScore);
 ScoreRouter.get("/:id", ScoreControl.TotalScore);
