@@ -26,7 +26,7 @@ module.exports = class AuthContollers {
     try {
       const user = await User.findOne({ 
         where: { 
-          email: 'pandedony@gmail.com'
+          email: req.body.email
         } 
       });
       
