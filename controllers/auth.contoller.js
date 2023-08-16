@@ -29,6 +29,7 @@ module.exports = class AuthContollers {
           email: req.body.email
         } 
       });
+
       
       const matchPassword = await verifyPassword(req.body.password, user.password);
       if (!matchPassword) return res.status(400).json({ msg: "Password Salah" });
@@ -36,6 +37,8 @@ module.exports = class AuthContollers {
       const userId = user.id;
       const username = user.username;
       const email = user.email;
+
+
       
       const accessToken = jwt.sign(
         { userId, username, email },
@@ -45,6 +48,8 @@ module.exports = class AuthContollers {
         }
       );
 
+
+
       const refreshToken = jwt.sign(
         { userId, username, email },
         process.env.REFRESH_TOKEN,
@@ -53,11 +58,16 @@ module.exports = class AuthContollers {
         }
       );
 
+
+
       await User.update({refresh_token:refreshToken},{
         where:{
           id: userId
         }
       });
+
+
+
 
       res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
@@ -66,6 +76,8 @@ module.exports = class AuthContollers {
       console.log(user.id);
 
       res.json({accessToken})
+
+      
       
     } catch (error) {
       res.status(404).json({msg:"Email tidak ditemukan"});
@@ -94,6 +106,7 @@ module.exports = class AuthContollers {
   async refreshToken(req, res) {
     try {
       const refreshToken = req.cookies.refreshToken;
+      console.log(refreshToken);
       if(!refreshToken) return res.sendStatus(401);
       const user = await User.findOne({
         where:{

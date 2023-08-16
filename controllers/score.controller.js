@@ -135,6 +135,8 @@ module.exports = class ScoreControllers {
         return res;
       }, {});
 
+      result.sort((a, b) => parseFloat(b.score) - parseFloat(a.score));
+
 
       return res.status(200).json({
         status: "Success",
