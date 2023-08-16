@@ -110,7 +110,7 @@ module.exports = class AuthContollers {
       if(!refreshToken) return res.sendStatus(401);
       const user = await User.findOne({
         where:{
-          regresh_token:refreshToken
+          refresh_token:refreshToken
         }
       });
       if(!user) return res.sendStatus(403);
