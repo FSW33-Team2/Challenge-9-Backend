@@ -7,10 +7,11 @@ const process = require("process");
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || "development";
 const config = require("../config/config.js")[env];
-const db = {};
 
-let sequelize;
-sequelize = new Sequelize(
+
+var db = {};
+
+var sequelize = new Sequelize(
   config.database,
   config.username,
   config.password,
@@ -38,6 +39,5 @@ Object.keys(db).forEach((modelName) => {
 });
 
 db.sequelize = sequelize;
-db.Sequelize = Sequelize;
 
 module.exports = db;

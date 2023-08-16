@@ -1,4 +1,4 @@
-const { User, Game, Score } = require("../database/models");
+const { User, Game, Score, sequelize } = require("../database/models");
 
 module.exports = class ScoreControllers {
   async UpdateScore(req, res, next) {
@@ -104,6 +104,43 @@ module.exports = class ScoreControllers {
           totalScore: scoreArr.reduce((partialSum, a) => partialSum + a),
         });
       }
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async TotalScoreLeaderboard(req, res, next){
+    try{
+      const { gameId } = req.params;
+      const score = await Score.findAll({
+        // attributes: [
+        //   'userId',
+        //   [sequelize.fn('sum', sequelize.col('score')), 'total_amount'],
+        // ],
+        include: User,
+        // group: ['userId'],
+        // raw: true
+      });
+
+      console.log(score);
+      
+      var result = [];
+      score.reduce(function(res, value) {
+        if (!res[value.userId]) {
+          res[value.userId] = { userId: value.userId, score: 0 , username:"" };
+          result.push(res[value.userId])
+        }
+        res[value.userId].score += value.score;
+        res[value.userId].username = value.User.username;
+        return res;
+      }, {});
+
+
+      return res.status(200).json({
+        status: "Success",
+        data: result,
+      });
+      
     } catch (error) {
       next(error);
     }
