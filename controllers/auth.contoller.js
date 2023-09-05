@@ -4,19 +4,21 @@ const jwt = require("jsonwebtoken");
 
 module.exports = class AuthContollers {
   async registerPlayer(req, res) {
-    const { username, email, password, confPassword} = req.body ;
-    if(await User.findOne({ where: { email } })) return res.status(400).json({msg: "Email sudah di gunakan"});
-    if(password !== confPassword) return res.status(400).json({msg: "Password tidak sama"});
+    const { username, email, password, confPassword } = req.body;
+    if (await User.findOne({ where: { email } }))
+      return res.status(400).json({ msg: "Email sudah di gunakan" });
+    if (password !== confPassword)
+      return res.status(400).json({ msg: "Password tidak sama" });
     const newPassword = await hashPassword(password);
 
     try {
       await User.create({
-        username:username,
-        email:email,
-        password:newPassword,
-        role: "user"
+        username: username,
+        email: email,
+        password: newPassword,
+        role: "user",
       });
-      res.json({msg: "Register player berhasil"});
+      res.json({ msg: "Register player berhasil" });
     } catch (error) {
       console.log(error);
     }
@@ -24,22 +26,23 @@ module.exports = class AuthContollers {
 
   async loginPlayer(req, res) {
     try {
-      const user = await User.findOne({ 
-        where: { 
-          email: req.body.email
-        } 
+      const user = await User.findOne({
+        where: {
+          email: req.body.email,
+        },
       });
 
-      
-      const matchPassword = await verifyPassword(req.body.password, user.password);
-      if (!matchPassword) return res.status(400).json({ msg: "Password Salah" });
-      
+      const matchPassword = await verifyPassword(
+        req.body.password,
+        user.password
+      );
+      if (!matchPassword)
+        return res.status(400).json({ msg: "Password Salah" });
+
       const userId = user.id;
       const username = user.username;
       const email = user.email;
 
-
-      
       const accessToken = jwt.sign(
         { userId, username, email },
         process.env.ACCESS_TOKEN,
@@ -47,8 +50,6 @@ module.exports = class AuthContollers {
           expiresIn: "20s",
         }
       );
-
-
 
       const refreshToken = jwt.sign(
         { userId, username, email },
@@ -58,48 +59,46 @@ module.exports = class AuthContollers {
         }
       );
 
-
-
-      await User.update({refresh_token:refreshToken},{
-        where:{
-          id: userId
+      await User.update(
+        { refresh_token: refreshToken },
+        {
+          where: {
+            id: userId,
+          },
         }
-      });
+      );
 
-
-
-
-      res.cookie('refreshToken', refreshToken, {
+      res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        maxAge: 24 * 60 * 60 * 1000
+        maxAge: 24 * 60 * 60 * 1000,
       });
       console.log(user.id);
 
-      res.json({accessToken})
-
-      
-      
+      res.json({ accessToken });
     } catch (error) {
-      res.status(404).json({msg:"Email tidak ditemukan"});
+      res.status(404).json({ msg: "Email tidak ditemukan" });
     }
   }
 
   async logoutPlayer(req, res) {
     const refreshToken = req.cookies.refreshToken;
-    if(!refreshToken) return res.sendStatus(204);
+    if (!refreshToken) return res.sendStatus(204);
     const user = await User.findOne({
-      where:{
-        regresh_token:refreshToken
-      }
+      where: {
+        regresh_token: refreshToken,
+      },
     });
-    if(!user) return res.sendStatus(204);
+    if (!user) return res.sendStatus(204);
     const userId = user.id;
-    await User.update({refresh_token: null}, {
-      where:{
-        id:userId
+    await User.update(
+      { refresh_token: null },
+      {
+        where: {
+          id: userId,
+        },
       }
-    });
-    res.clearCookie('refreshToken');
+    );
+    res.clearCookie("refreshToken");
     return res.sendStatus(200);
   }
 
@@ -107,26 +106,30 @@ module.exports = class AuthContollers {
     try {
       const refreshToken = req.cookies.refreshToken;
       console.log(refreshToken);
-      if(!refreshToken) return res.sendStatus(401);
+      if (!refreshToken) return res.unauthorized();
       const user = await User.findOne({
-        where:{
-          refresh_token:refreshToken
-        }
+        where: {
+          refresh_token: refreshToken,
+        },
       });
-      if(!user) return res.sendStatus(403);
-      jwt.verify(refreshToken, process.env.REFRESH_TOKEN, (err, decoded)=>{
-        if(err) return res.sendStatus(403);
+      if (!user) return res.sendStatus(403);
+      jwt.verify(refreshToken, process.env.REFRESH_TOKEN, (err, decoded) => {
+        if (err) return res.sendStatus(403);
         const userId = user.id;
         const username = user.username;
         const email = user.email;
 
-        const accessToken = jwt.sign({userId, username, email}, process.env.ACCESS_TOKEN, {
-          expiresIn: '15s'
-        })
-        res.json({accessToken});
+        const accessToken = jwt.sign(
+          { userId, username, email },
+          process.env.ACCESS_TOKEN,
+          {
+            expiresIn: "15s",
+          }
+        );
+        res.json({ accessToken });
       });
     } catch (error) {
       console.log(error);
     }
-  }  
+  }
 };
