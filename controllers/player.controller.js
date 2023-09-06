@@ -34,17 +34,22 @@ module.exports = class PlayerControllers {
           result: "Not found",
           message: `Player with id: ${id} not found`,
         });
-      const updatePlayer = await User.update(
-        {
-          username,
-          email,
-          password: await hashPassword(password),
-        },
-        {
-          where: { id: id },
-        }
-      );
-      if (updatePlayer == 1) {
+      const updateFields = {};
+      if (username) {
+        updateFields.username = username;
+      }
+
+      if (email) {
+        updateFields.email = email;
+      }
+
+      if (password) {
+        updateFields.password = await hashPassword(password);
+      }
+      const [updateCount] = await User.update(updateFields, {
+        where: { id: id },
+      });
+      if (updateCount == 1) {
         return res.status(200).json({
           result: "Success",
           message: `Player with id: ${id} successfully updated`,

@@ -52,6 +52,30 @@ module.exports = class ScoreControllers {
     }
   }
 
+  async AllScoreById(req, res, next) {
+    try {
+      const { id } = req.params;
+      const score = await Score.findAll({
+        where: {
+          userId: id,
+        },
+      });
+      if (score.length === 0) {
+        return res.status(500).json({
+          result: "failed",
+          message: "This player didnt have score",
+        });
+      } else {
+        return res.status(200).json({
+          result: "Success",
+          score,
+        });
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async TotalScore(req, res, next) {
     try {
       const { id } = req.params;
