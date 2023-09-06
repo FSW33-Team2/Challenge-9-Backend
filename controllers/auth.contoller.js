@@ -105,7 +105,7 @@ module.exports = class AuthContollers {
     try {
       const refreshToken = req.cookies.refreshToken;
       console.log(refreshToken);
-      if (!refreshToken) return res.unauthorized();
+      if (!refreshToken) return res.sendStatus(200);
       const user = await User.findOne({
         where: {
           refresh_token: refreshToken,
