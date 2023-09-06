@@ -111,9 +111,9 @@ module.exports = class AuthContollers {
           refresh_token: refreshToken,
         },
       });
-      if (!user) return res.sendStatus(403);
+      if (!user) res.clearCookie("refreshToken").sendStatus(403);
       jwt.verify(refreshToken, process.env.REFRESH_TOKEN, (err, decoded) => {
-        if (err) return res.sendStatus(403);
+        if (err) return res.clearCookie("refreshToken").sendStatus(403);
         const userId = user.id;
         const username = user.username;
         const email = user.email;
