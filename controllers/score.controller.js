@@ -59,6 +59,8 @@ module.exports = class ScoreControllers {
         where: {
           userId: id,
         },
+        order: [["createdAt", "DESC"]],
+        limit: 5,
       });
       if (score.length === 0) {
         return res.status(500).json({
